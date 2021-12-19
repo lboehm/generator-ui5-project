@@ -1,4 +1,5 @@
 "use strict";
+const { throws } = require("assert");
 const Generator = require("yeoman-generator"),
     fileaccess = require("../../helpers/fileaccess"),
     path = require("path"),
@@ -10,6 +11,48 @@ module.exports = class extends Generator {
     static displayName = "Create a new OpenUI5/SAPUI5 project";
 
     prompting() {
+        const commandLineArgs = require("command-line-args");
+        const optionDefinitions = [
+            {
+                name: "projectname", //
+                alias: "n",
+                type: String,
+                defaultValue: "myUI5App"
+            },
+            {
+                name: "namespaceUI5", //
+                alias: "s",
+                type: String,
+                defaultValue: "com.myorg"
+            },
+            {
+                name: "platform", //
+                alias: "p",
+                defaultValue: "Static webserver"
+            },
+            {
+                name: "viewtype", //
+                alias: "v",
+                type: String
+            },
+            {
+                name: "ui5libs", //
+                alias: "l",
+                type: String
+            },
+            {
+                name: "newdir", //
+                alias: "d",
+                type: Boolean
+            },
+            {
+                name: "codeassist", //
+                alias: "c",
+                type: Boolean
+            }
+        ];
+        const options = commandLineArgs(optionDefinitions, { partial: true });
+
         if (!this.options.embedded) {
             this.log(yosay(`Welcome to the ${chalk.red("easy-ui5-project")} generator!`));
         }
@@ -25,7 +68,8 @@ module.exports = class extends Generator {
                     }
                     return "Please use alpha numeric characters only for the project name.";
                 },
-                default: "myUI5App"
+                default: "myUI5App",
+                when: !options.projectname
             },
             {
                 type: "input",
@@ -37,7 +81,8 @@ module.exports = class extends Generator {
                     }
                     return "Please use alpha numeric characters and dots only for the namespace.";
                 },
-                default: "com.myorg"
+                default: "com.myorg",
+                when: !options.namespaceUI5
             },
             {
                 type: "list",
@@ -51,14 +96,16 @@ module.exports = class extends Generator {
                     "Application Router @ SAP HANA XS Advanced",
                     "SAP NetWeaver"
                 ],
-                default: "Static webserver"
+                default: "Static webserver",
+                when: !options.platform
             },
             {
                 type: "list",
                 name: "viewtype",
                 message: "Which view type do you want to use?",
                 choices: ["XML", "JSON", "JS", "HTML"],
-                default: "XML"
+                default: "XML",
+                when: !options.viewtype
             },
             {
                 type: "list",
@@ -78,26 +125,46 @@ module.exports = class extends Generator {
                     return props.platform !== "SAP Launchpad service"
                         ? "Content delivery network (OpenUI5)"
                         : "Content delivery network (SAPUI5)";
-                }
+                },
+                when: !options.ui5libs
             },
             {
                 type: "confirm",
                 name: "newdir",
                 message: "Would you like to create a new directory for the project?",
-                default: true
+                default: true,
+                when: !options.newdir
             },
             {
                 type: "confirm",
                 name: "codeassist",
                 message: "Would you like to add JavaScript code assist libraries to the project?",
-                default: true
+                default: true,
+                when: !options.codeassist
             }
         ]).then((answers) => {
-            if (answers.newdir) {
-                this.destinationRoot(`${answers.namespaceUI5}.${answers.projectname}`);
+            const projectname = options.projectname ? options.projectname : answers.projectname;
+            const namespaceUI5 = options.namespaceUI5 ? options.namespaceUI5 : answers.namespaceUI5;
+            const platform = options.platform ? options.platform : answers.platform;
+            const viewtype = options.viewtype ? options.viewtype : answers.viewtype;
+            const ui5libs = options.ui5libs ? options.ui5libs : answers.ui5libs;
+            const newDir = options.newdir ? options.newdir : answers.newdir;
+            const codeassist = options.codeassist ? options.codeassist : answers.codeassist;
+
+            // we have to set destination root before saving information to the config file
+            // because otherwise the config file can't be created
+            if (newDir) {
+                this.destinationRoot(`${namespaceUI5}.${projectname}`);
             }
-            this.config.set(answers);
-            this.config.set("namespaceURI", answers.namespaceUI5.split(".").join("/"));
+
+            this.config.set("projectname", projectname);
+            this.config.set("namespaceUI5", namespaceUI5);
+            this.config.set("platform", platform);
+            this.config.set("viewtype", viewtype);
+            this.config.set("ui5libs", ui5libs);
+            this.config.set("newdir", newDir);
+            this.config.set("codeassist", codeassist);
+            this.config.set("namespaceURI", namespaceUI5.split(".").join("/"));
         });
     }
 
