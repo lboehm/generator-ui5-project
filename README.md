@@ -54,6 +54,149 @@ $> yo ./generator-ui5-project
 
 ![generation flow](./docs/standaloneUsage.gif)
 
+### Providing command line arguments
+
+You can call the generator providing command line arguments. 
+
+In that case, for every question asked by the generator, that has a valid argument provided, the question will be skipped. 
+
+| Parameter name     | Parameter           | Doumentation link           |
+|--------------------|---------------------|-----------------------------|
+| Project name       | `--projectname, -n` | [Link](#project-name)       |
+| Namespace          | `--namespace, -s`   | [Link](#namespace)          |
+| Platform           | `--platform, -p`    | [Link](#platform)           |
+| View type          | `--viewtype, -v`    | [Link](#viewtype)           |
+| UI5 Library source | `--ui5libs, -l`     | [Link](#ui5-library-source) |
+| New directory      | `--newdir, -n`      | [Link](#new-directory)      |
+| Code assist        | `--codeassist, -c`  | [Link](#code-assist)        |
+
+#### Project name
+
+```
+--projectname, -n
+```
+
+The project name takes alpha numeric characters only. Sample:
+
+```bash
+$> yo ./generator-ui5-project --projectname myproject
+$> yo ./generator-ui5-project -p myproject
+```
+
+#### Namespace
+
+```
+--namespace, -s
+```
+
+The namespace takes alpha numeric characters and dots only. Sample:
+
+```bash
+$> yo ./generator-ui5-project --namespace com.samplens
+$> yo ./generator-ui5-project -s com.samplens
+```
+
+#### Platform
+
+You can define for which target platform the app is built (see [Target platforms](#target-platforms)). 
+
+```
+--platform, -p
+```
+
+The platform takes only values, defined in the following table:
+
+| Key               | Value                                                |
+|-------------------|------------------------------------------------------|
+| `staticWebserver` | Static webserver                                     |
+| `appRouterCf`     | Application Router @ Cloud Foundry                   |
+| `appRepBtp`       | SAP HTML5 Application Repository service for SAP BTP |
+| `launchpadSrv`    | SAP Launchpad service                                |
+| `appRouterHanaXs` | Application Router @ SAP HANA XS Advanced            |
+| `netweaver`       | SAP NetWeaver                                        |
+
+Sample:
+
+```bash
+$> yo ./generator-ui5-project --platform netweaver
+$> yo ./generator-ui5-project -p launchpadSrv
+```
+
+#### View type
+
+```
+--viewtype, -v
+```
+
+The view type parameter takes only values, defined in the following table:
+
+| Key    | Value      |
+|--------|------------|
+| `XML`  | XML-Views  |
+| `JSON` | JSON-Views |
+| `JS`   | JS-Views   |
+| `HTML` | HTML-Views |
+
+Sample:
+
+```bash
+$> yo ./generator-ui5-project --viewtype XML
+$> yo ./generator-ui5-project -v JSON
+```
+
+#### UI5 Library source
+
+```
+--ui5libs, -l
+```
+
+The UI5 library source parameter takes only values, defined in the following table:
+
+| Key            | Value                              |
+|----------------|------------------------------------|
+| `cdnOpenUi5`   | Content delivery network (OpenUI5) |
+| `cdnSapUi5`    | Content delivery network (SAPUI5)  |
+| `localOpenUi5` | Local resources (OpenUI5)          |
+| `localSapUi5`  | Local resources (SAPUI5)           |
+
+
+Sample:
+
+```bash
+$> yo ./generator-ui5-project --ui5libs cdnSapUi5
+$> yo ./generator-ui5-project -l localSapUi5
+```
+
+#### New Directory 
+
+```
+--newdir, -d
+```
+
+The new directory parameter takes two values: `true` or `false`. If you don't pass the parameter, the generator will ask if a new directory should be created. So you have to specify a value, if you don't want the generator to ask that question. 
+
+Sample:
+
+```bash
+$> yo ./generator-ui5-project --newdir true
+$> yo ./generator-ui5-project -d false
+```
+
+#### Code assist
+
+```
+--codeassist, -c
+```
+
+The code assist parameter takes two values: `true` or `false`. If you don't pass the parameter, the generator will ask if code assist libraries should be added [see this link](https://help.sap.com/viewer/17d50220bcd848aa854c9c182d65b699/Latest/en-US/5c561ed1243946bf8317709957698141.html). So you have to specify a value, if you don't want the generator to ask that question. 
+
+Sample:
+
+```bash
+$> yo ./generator-ui5-project --codeassist true
+$> yo ./generator-ui5-project -c false
+```
+
 ## Target platforms
 
 During the prompting phase, the generator will ask on which target platform your app should run. Currently, the following options are available:
